@@ -1,6 +1,7 @@
 package com.mustafafidan.rahatlaticisesler.injection.module;
 
 
+import com.mustafafidan.rahatlaticisesler.network.FavoritesApi;
 import com.mustafafidan.rahatlaticisesler.utils.Constants;
 
 
@@ -14,6 +15,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
 public class NetworkModule {
+
+
+    @Provides
+    @Reusable
+    FavoritesApi provideAuthApi(Retrofit retrofit) {
+        return retrofit.create(FavoritesApi.class);
+    }
 
     @Provides
     @Reusable

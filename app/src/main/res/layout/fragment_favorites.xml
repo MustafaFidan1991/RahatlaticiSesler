@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <data>
+
+        <variable
+            name="adapter"
+            type="com.mustafafidan.rahatlaticisesler.base.BaseRecyclerViewAdapter" />
+        <variable
+            name="layoutManager"
+            type="android.support.v7.widget.LinearLayoutManager" />
+
+        <variable
+            name="dividerItemDecoration"
+            type="android.support.v7.widget.DividerItemDecoration" />
+
+    </data>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.activity.detail.detaillatestmovements.LatestMovementsFragment">
+        <android.support.v7.widget.RecyclerView
+            tools:listitem="@layout/fragment_favorites_item"
+            tools:itemCount="20"
+            android:layout_marginTop="10dp"
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:adapter="@{adapter}"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layoutManager="@{layoutManager}" />
+
+
+    </RelativeLayout>
+</layout>

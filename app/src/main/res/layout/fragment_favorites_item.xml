@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <data>
+        <variable
+            name="sound"
+            type="com.mustafafidan.rahatlaticisesler.model.Sound"/>
+        <variable
+            name="presenter"
+            type="com.mustafafidan.rahatlaticisesler.ui.favorites.FavoritesPresenter"/>
+    </data>
+    <android.support.v7.widget.CardView
+        android:background="@color/colorPrimaryDark"
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/favorite_item_height"
+        android:layout_margin="5dp"
+        app:cardCornerRadius="@dimen/favorite_item_radius"
+        app:cardElevation="@dimen/favorite_item_card_elevation">
+
+        <RelativeLayout
+            android:padding="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                app:image_url="@{sound.soundImageUrl}"
+                android:id="@+id/image3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:textSize="14sp"
+                android:text="@{sound.soundName}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textColor="@android:color/black" />
+
+
+
+            <LinearLayout
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <SeekBar
+                    android:progress="@{sound.totalSecond}"
+                    android:layout_weight="7"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
+                <ImageButton
+                    android:layout_marginLeft="10dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:layout_weight="1"
+                    android:tint="@color/colorGrayDark"
+                    app:srcCompat="@drawable/ic_favorite_empty"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
+
+                <ImageButton
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:layout_weight="1"
+                    android:tint="@color/colorGrayDark"
+                    app:srcCompat="@drawable/ic_play_circle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</layout>

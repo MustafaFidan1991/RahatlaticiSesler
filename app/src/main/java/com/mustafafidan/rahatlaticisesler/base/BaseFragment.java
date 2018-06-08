@@ -1,6 +1,6 @@
 package com.mustafafidan.rahatlaticisesler.base;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
@@ -9,17 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-abstract public class BaseFragment<P extends BasePresenter<BaseView>,DB extends ViewDataBinding> extends Fragment implements BaseView {
+abstract public class BaseFragment<P extends BasePresenter,DB extends ViewDataBinding> extends Fragment implements BaseView {
+
+    protected DB binding;
+
+    protected P presenter;
 
 
-    DB binding;
+    protected abstract int getLayoutRes();
 
-    P presenter;
-
-
-    abstract int getLayoutRes();
-
-    abstract P instantiatePresenter();
+    protected abstract P instantiatePresenter();
 
 
     @Override

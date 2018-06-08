@@ -4,6 +4,7 @@ package com.mustafafidan.rahatlaticisesler.injection.component;
 import com.mustafafidan.rahatlaticisesler.base.BaseView;
 import com.mustafafidan.rahatlaticisesler.injection.module.ContextModule;
 import com.mustafafidan.rahatlaticisesler.injection.module.NetworkModule;
+import com.mustafafidan.rahatlaticisesler.ui.favorites.FavoritesPresenter;
 
 import javax.inject.Singleton;
 
@@ -13,6 +14,9 @@ import dagger.Component;
 @Singleton
 @Component(modules = {ContextModule.class, NetworkModule.class})
 public interface PresenterInjector {
+
+
+    void inject(FavoritesPresenter favoritesPresenter);
 
 
     @Component.Builder

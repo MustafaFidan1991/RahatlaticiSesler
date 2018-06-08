@@ -13,4 +13,6 @@ public interface BaseView {
     Context getContext();
 
 
+
+
 }

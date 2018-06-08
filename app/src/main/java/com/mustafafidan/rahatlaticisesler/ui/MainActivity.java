@@ -3,15 +3,19 @@ package com.mustafafidan.rahatlaticisesler.ui;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.mustafafidan.rahatlaticisesler.R;
+import com.mustafafidan.rahatlaticisesler.base.BaseViewPagerAdapter;
+import com.mustafafidan.rahatlaticisesler.ui.favorites.FavoritesFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
+
+    private ViewPager viewPager;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -20,13 +24,13 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
+
                     return true;
                 case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
+
                     return true;
                 case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
+
                     return true;
             }
             return false;
@@ -38,9 +42,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
+        viewPager = (ViewPager)findViewById(R.id.viewpager);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+
+        setupViewPager();
+    }
+
+
+    void setupViewPager(){
+
+        BaseViewPagerAdapter baseViewPagerAdapter = new BaseViewPagerAdapter(getSupportFragmentManager());
+
+        FavoritesFragment favoritesFragment = FavoritesFragment.newInstance();
+
+
+        baseViewPagerAdapter.addFrag(favoritesFragment,"");
+
+        viewPager.setAdapter(baseViewPagerAdapter);
+
+
     }
 
 }
