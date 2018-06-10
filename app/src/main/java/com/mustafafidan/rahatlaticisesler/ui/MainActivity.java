@@ -81,6 +81,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 
+
+        /*
+        * result olarak gelen data burda favoritesFragment'a iletiliyor
+        * */
         if(SONG_DETAIL_CODE == requestCode){
             Bundle bundle = data.getExtras();
             List<Sound> favoriteItems = (ArrayList<Sound>) bundle.getSerializable("favoriteItems");

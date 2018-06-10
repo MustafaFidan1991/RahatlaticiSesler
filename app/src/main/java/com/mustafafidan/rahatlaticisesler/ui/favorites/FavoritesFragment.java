@@ -130,6 +130,19 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
         return binding.getRoot();
     }
 
+    /*
+     * eklenen çıkarılan favoriler burada pass ediliyor
+     *
+     * burdan arayüz güncellemesi için düzenleme için presentera veriliyor
+     *
+     *
+     * */
+    public void updateItems(List<Sound> favoriteItems,List<Sound> unFavoriteItems){
+        presenter.updateItems(favoriteItems,unFavoriteItems,binding.getAdapter().getItems());
+    }
+
+
+
     @Override
     public void showLoading() {
         binding.progressBar.setVisibility(View.VISIBLE);
@@ -157,7 +170,6 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
 
 
 
-    public void updateItems(List<Sound> favoriteItems,List<Sound> unFavoriteItems){
-        presenter.updateItems(favoriteItems,unFavoriteItems,binding.getAdapter().getItems());
-    }
+
+
 }

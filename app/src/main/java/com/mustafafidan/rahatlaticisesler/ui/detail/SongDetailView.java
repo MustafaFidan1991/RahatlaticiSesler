@@ -8,9 +8,25 @@ import java.util.List;
 public interface SongDetailView extends BaseView {
 
 
+
+    /*
+     * arayüz tarafında progress gösterilceğinde çağrılır
+     * presenter tarafından
+     * */
     void showLoading();
 
+
+    /*
+     * arayüz tarafında progress kaldırılacağı zaman çağrılır
+     * presenter tarafından
+     * */
     void hideLoading();
 
-    void updateItems(List<Sound> favorites);
+
+
+    /**
+     * arayüz tarafında recyclerview güncellenirken çağrılır
+     * @param items update edilcek list
+     */
+    void updateItems(List<Sound> items);
 }

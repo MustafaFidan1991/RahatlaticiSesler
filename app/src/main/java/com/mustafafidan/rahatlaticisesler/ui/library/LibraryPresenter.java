@@ -27,6 +27,9 @@ public class LibraryPresenter extends BasePresenter<LibraryView> {
     }
 
 
+    /**
+     * servisten dinamik olarak kategoriler getiriliyor
+     * */
     public void getLibraryItems(){
 
 

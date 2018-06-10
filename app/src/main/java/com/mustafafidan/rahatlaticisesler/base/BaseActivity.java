@@ -13,13 +13,28 @@ import android.view.ViewGroup;
 
 abstract public class BaseActivity<P extends BasePresenter,DB extends ViewDataBinding> extends AppCompatActivity implements BaseView {
 
+
+    /*
+    * generic data binding için tanımlanmıştır
+    * */
     protected DB binding;
 
+
+
+    /*
+     * her activityde tanımlanacak presenter objesi
+     * */
     protected P presenter;
 
-
+    /*
+     * ilgili layout çağrılmalı zorunludur
+     * */
     protected abstract int getLayoutRes();
 
+
+    /*
+     * presenter oluşturulmalı zorunludur
+     * */
     protected abstract P instantiatePresenter();
 
 

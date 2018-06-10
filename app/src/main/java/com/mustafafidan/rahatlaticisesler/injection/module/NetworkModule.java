@@ -19,6 +19,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NetworkModule {
 
 
+
+    /*
+     *  apiler retrofit ve dagger'a entegre ediliyor.
+     *
+     *  bu sayede presenter üzerinden kolayca inject edilebilir hale geliyor
+     * */
+
     @Provides
     @Reusable
     FavoritesApi provideFavoritesApi(Retrofit retrofit) {
@@ -39,6 +46,12 @@ public class NetworkModule {
         return retrofit.create(SongDetailApi.class);
     }
 
+
+
+    /*
+     * dagger'a retrofit sağlaması için bilgi veriliyor
+     * annotation'larla tekrar kullanılması için dagger bilgilendiriliyor
+     * */
     @Provides
     @Reusable
     Retrofit provideRetrofitInterface() {

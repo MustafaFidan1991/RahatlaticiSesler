@@ -13,6 +13,11 @@ import javax.inject.Singleton;
 import dagger.BindsInstance;
 import dagger.Component;
 
+/*
+ *modüller component arayüzünden
+ *
+ * dagger'a tanıtılıyor
+ * */
 @Singleton
 @Component(modules = {ContextModule.class, NetworkModule.class})
 public interface PresenterInjector {
@@ -21,6 +26,7 @@ public interface PresenterInjector {
     void inject(FavoritesPresenter favoritesPresenter);
     void inject(SongDetailPresenter songDetailPresenter);
     void inject(LibraryPresenter libraryPresenter);
+
 
 
     @Component.Builder

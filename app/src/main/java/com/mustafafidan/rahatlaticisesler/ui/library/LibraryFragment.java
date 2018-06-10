@@ -61,6 +61,11 @@ public class LibraryFragment extends BaseFragment<LibraryPresenter,FragmentLibra
                 (binding, data) -> {
             if(binding instanceof FragmentLibraryItemBinding){
                 ((FragmentLibraryItemBinding)binding).cardView.setOnClickListener((v)->{
+
+                    /*
+                    * detay activity çağrılıyor
+                    * */
+
                     Intent intent = new Intent(LibraryFragment.this.getActivity(),SongDetailActivity.class);
                     intent.putExtra("categoryId",data.getCategoryId());
                     LibraryFragment.this.getActivity().startActivityForResult(intent,MainActivity.SONG_DETAIL_CODE);

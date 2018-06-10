@@ -10,9 +10,22 @@ public interface LibraryView
         extends BaseView {
 
 
+    /*
+     * arayüz tarafında progress gösterilceğinde çağrılır
+     * presenter tarafından
+     * */
     void showLoading();
 
+
+    /*
+     * arayüz tarafında progress kaldırılacağı zaman çağrılır
+     * presenter tarafından
+     * */
     void hideLoading();
 
+    /**
+     * arayüz tarafında recyclerview güncellenirken çağrılır
+     * @param categoryList update edilcek list
+     */
     void updateLibraryItems(List<Category> categoryList);
 }

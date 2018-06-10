@@ -11,13 +11,26 @@ import android.view.ViewGroup;
 
 abstract public class BaseFragment<P extends BasePresenter,DB extends ViewDataBinding> extends Fragment implements BaseView {
 
+    /*
+     * generic data binding için tanımlanmıştır
+     * */
     protected DB binding;
 
+
+    /*
+     * her activityde tanımlanacak presenter objesi
+     * */
     protected P presenter;
 
-
+    /*
+     * ilgili layout çağrılmalı zorunludur
+     * */
     protected abstract int getLayoutRes();
 
+
+    /*
+     * presenter oluşturulmalı zorunludur
+     * */
     protected abstract P instantiatePresenter();
 
 

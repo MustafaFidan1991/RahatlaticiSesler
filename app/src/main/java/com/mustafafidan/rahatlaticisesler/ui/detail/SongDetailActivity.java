@@ -89,6 +89,8 @@ public class SongDetailActivity extends BaseActivity<SongDetailPresenter,Activit
                     });
 
 
+
+
                     ((ActivitySongDetailItemBinding) itemBinding).seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                         @Override
                         public void onProgressChanged(SeekBar seekBar, int i, boolean fromUser) {
@@ -107,6 +109,12 @@ public class SongDetailActivity extends BaseActivity<SongDetailPresenter,Activit
 
 
                     ((ActivitySongDetailItemBinding) itemBinding).favoriteButton.setOnClickListener(view -> {
+
+
+                        /*
+                         * favorilere eklenme veya kaldırılma durumu burda yakalanılıyor.
+                         * */
+
                         if(!data.isFavorite()){
                             data.setFavorite(true);
                             ((ActivitySongDetailItemBinding) itemBinding).favoriteButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_filled));
@@ -122,6 +130,19 @@ public class SongDetailActivity extends BaseActivity<SongDetailPresenter,Activit
                     });
                 }));
         presenter.getItems(categoryId);
+    }
+
+
+
+    /*
+     * result olarak
+     * eklenen veya çıkarılan favorileri
+     * diğer activitye iletir
+     *
+     * */
+    public void finishActivity(){
+        setResult(RESULT_OK,presenter.getResultIntent());
+        finish();
     }
 
     @Override
@@ -170,8 +191,7 @@ public class SongDetailActivity extends BaseActivity<SongDetailPresenter,Activit
     }
 
 
-    public void finishActivity(){
-        setResult(RESULT_OK,presenter.getResultIntent());
-        finish();
-    }
+
+
+
 }

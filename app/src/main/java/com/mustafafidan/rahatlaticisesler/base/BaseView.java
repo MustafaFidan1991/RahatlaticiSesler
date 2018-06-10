@@ -1,7 +1,9 @@
 package com.mustafafidan.rahatlaticisesler.base;
 
 import android.content.Context;
-
+/*
+ *
+ * */
 public interface BaseView {
 
 

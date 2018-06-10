@@ -55,6 +55,12 @@ public class SongDetailPresenter  extends BasePresenter<SongDetailView> {
 
 
 
+
+    /**
+    * servisten dinamik olarak
+    * categoryId'sine göre datalar getiriliyor
+    * @param categoryId getirilecek item'ların kategori id'si
+    * */
     public void getItems(int categoryId){
 
 
@@ -77,6 +83,10 @@ public class SongDetailPresenter  extends BasePresenter<SongDetailView> {
 
 
 
+
+    /*
+    * diğer activity'e gönderilcek intent hazırlanılıyor
+    * */
     public Intent getResultIntent(){
         Intent intent = new Intent();
 

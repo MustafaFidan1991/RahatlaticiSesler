@@ -28,7 +28,10 @@ public class FavoritesPresenter extends BasePresenter<FavoritesView> {
         super(view);
     }
 
-
+    /**
+     * servisten dinamik olarak datalar getiriliyor
+     * @param userId kullanıcı id
+     * */
     public void getFavouritesByUserId(int userId){
         view.showLoading();
         subscription = favoritesApi
@@ -68,6 +71,15 @@ public class FavoritesPresenter extends BasePresenter<FavoritesView> {
 
 
 
+
+
+    /**
+     *
+     * @param favoriteItems eklenecek favoriler
+     * @param unFavoriteItems çıkarılacak favoriler
+     * @param latestItems mevcut list
+     *
+     * */
     public void updateItems(List<Sound> favoriteItems, List<Sound> unFavoriteItems,List<Sound> latestItems){
 
         if(favoriteItems.size()>0){
