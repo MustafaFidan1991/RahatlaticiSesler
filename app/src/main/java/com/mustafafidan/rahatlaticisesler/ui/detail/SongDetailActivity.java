@@ -10,6 +10,7 @@ import com.mustafafidan.rahatlaticisesler.BR;
 import com.mustafafidan.rahatlaticisesler.R;
 import com.mustafafidan.rahatlaticisesler.base.BaseActivity;
 import com.mustafafidan.rahatlaticisesler.base.BaseRecyclerViewAdapter;
+import com.mustafafidan.rahatlaticisesler.databinding.ActivitySongDetailBinding;
 import com.mustafafidan.rahatlaticisesler.databinding.ActivitySongDetailItemBinding;
 import com.mustafafidan.rahatlaticisesler.model.Sound;
 
@@ -31,13 +32,11 @@ public class SongDetailActivity extends BaseActivity<SongDetailPresenter,Activit
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding.setLayoutManager(new LinearLayoutManager(this));
+        binding.setAdapter(new BaseRecyclerViewAdapter(new ArrayList<Sound>(),this,R.layout.activity_song_detail_item,BR.sound,presenter,BR.presenter,null));
 
 
-
-        binding.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
-        binding.setAdapter(new BaseRecyclerViewAdapter(new ArrayList<Sound>(),getActivity().getBaseContext(),R.layout.fragment_favorites_item,BR.sound,presenter,BR.presenter,null));
-
-
+        presenter.getItems();
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.mustafafidan.rahatlaticisesler.model;
 
-public class Category {
+import com.mustafafidan.rahatlaticisesler.base.BaseModel;
+
+public class Category extends BaseModel {
 
     int categoryId;
 

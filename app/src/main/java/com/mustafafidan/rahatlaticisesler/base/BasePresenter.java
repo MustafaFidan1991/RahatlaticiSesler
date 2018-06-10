@@ -4,7 +4,9 @@ import com.mustafafidan.rahatlaticisesler.injection.component.DaggerPresenterInj
 import com.mustafafidan.rahatlaticisesler.injection.component.PresenterInjector;
 import com.mustafafidan.rahatlaticisesler.injection.module.ContextModule;
 import com.mustafafidan.rahatlaticisesler.injection.module.NetworkModule;
+import com.mustafafidan.rahatlaticisesler.ui.detail.SongDetailPresenter;
 import com.mustafafidan.rahatlaticisesler.ui.favorites.FavoritesPresenter;
+import com.mustafafidan.rahatlaticisesler.ui.library.LibraryPresenter;
 
 public abstract class BasePresenter<V extends BaseView> {
 
@@ -32,14 +34,24 @@ public abstract class BasePresenter<V extends BaseView> {
             presenterInjector.inject((FavoritesPresenter) this);
         }
 
+
+        if(this instanceof SongDetailPresenter){
+            presenterInjector.inject((SongDetailPresenter) this);
+        }
+
+
+        if(this instanceof LibraryPresenter){
+            presenterInjector.inject((LibraryPresenter) this);
+        }
+
     }
 
 
 
-    void onViewCreated(){}
+    protected void onViewCreated(){}
 
 
-    void onViewDestroyed(){}
+    protected void onViewDestroyed(){}
 
 
 

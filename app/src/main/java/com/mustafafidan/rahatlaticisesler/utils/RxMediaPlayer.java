@@ -7,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -16,6 +18,12 @@ import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class RxMediaPlayer extends MediaPlayer {
+
+
+    boolean isFirstPlay = true;
+    boolean isPrepareSuccess = false;
+    int currentPosition = 0;
+    boolean isPause = false;
 
     MediaPlayerListener mediaPlayerListener;
 
@@ -36,6 +44,7 @@ public class RxMediaPlayer extends MediaPlayer {
 
     public interface MediaPlayerListener{
         void onPrepareSuccess(long audioDuration);
+        void onComplete(RxMediaPlayer mediaPlayer);
 
     }
 
@@ -121,6 +130,7 @@ public class RxMediaPlayer extends MediaPlayer {
 
         disposables.add(observable.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(
                 mediaPlayer -> {
+                    isPrepareSuccess = true;
                     mediaPlayerListener.onPrepareSuccess(RxMediaPlayer.this.getDuration()/1000);
                     successListener.onSuccess();
                 }
@@ -159,17 +169,48 @@ public class RxMediaPlayer extends MediaPlayer {
 
                     @Override
                     public void onComplete() {
-
+                        mediaPlayerListener.onComplete(RxMediaPlayer.this);
                     }
                 }));
     }
 
 
+    public boolean isFirstPlay() {
+        return isFirstPlay;
+    }
 
+    public void setFirstPlay(boolean firstPlay) {
+        isFirstPlay = firstPlay;
+    }
 
+    public boolean isPrepareSuccess() {
+        return isPrepareSuccess;
+    }
 
+    public void setPrepareSuccess(boolean prepareSuccess) {
+        isPrepareSuccess = prepareSuccess;
+    }
 
+    @Override
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
 
+    public void setCurrentPosition(int currentPosition) {
+        this.currentPosition = currentPosition;
+    }
+
+    public boolean isPause() {
+        return isPause;
+    }
+
+    public void setPause(boolean pause) {
+        isPause = pause;
+    }
+
+    public CompositeDisposable getDisposables() {
+        return disposables;
+    }
 
     //Memory hatalarına engel olmak için
     private void clear(){

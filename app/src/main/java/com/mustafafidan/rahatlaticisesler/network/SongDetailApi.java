@@ -6,13 +6,11 @@ import com.mustafafidan.rahatlaticisesler.model.Sound;
 import java.util.List;
 
 import io.reactivex.Observable;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.POST;
+import retrofit2.http.Url;
 
-public interface FavoritesApi {
+public interface SongDetailApi {
 
-    @GET("/rahatlaticisesler/favorites.html")
-    Observable<BaseResponse<List<Sound>>> getFavorites();
-
+    @GET
+    Observable<BaseResponse<List<Sound>>> getSongDetail(@Url String url);
 }

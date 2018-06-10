@@ -15,18 +15,8 @@ public class Sound extends BaseModel {
 
     String soundImageUrl;
 
-
-    int totalSecond;
-
     boolean isFavorite = false;
 
-    public int getTotalSecond() {
-        return totalSecond;
-    }
-
-    public void setTotalSecond(int totalSecond) {
-        this.totalSecond = totalSecond;
-    }
 
     public String getSoundName() {
         return soundName;

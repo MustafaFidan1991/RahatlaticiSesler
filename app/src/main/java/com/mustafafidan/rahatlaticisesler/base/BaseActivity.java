@@ -26,15 +26,8 @@ abstract public class BaseActivity<P extends BasePresenter,DB extends ViewDataBi
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-    }
-
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
         presenter = instantiatePresenter();
         binding = DataBindingUtil.setContentView(this,getLayoutRes());
-
     }
+
 }

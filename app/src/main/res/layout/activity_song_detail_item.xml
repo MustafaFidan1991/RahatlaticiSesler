@@ -9,7 +9,7 @@
             type="com.mustafafidan.rahatlaticisesler.model.Sound"/>
         <variable
             name="presenter"
-            type="com.mustafafidan.rahatlaticisesler.ui.favorites.FavoritesPresenter"/>
+            type="com.mustafafidan.rahatlaticisesler.ui.detail.SongDetailPresenter"/>
     </data>
     <android.support.v7.widget.CardView
         android:background="@color/colorPrimaryDark"

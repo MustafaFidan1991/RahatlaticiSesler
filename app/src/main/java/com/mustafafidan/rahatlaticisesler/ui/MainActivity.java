@@ -25,13 +25,10 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-
+                    viewPager.setCurrentItem(0,false);
                     return true;
                 case R.id.navigation_dashboard:
-
-                    return true;
-                case R.id.navigation_notifications:
-
+                    viewPager.setCurrentItem(1,false);
                     return true;
             }
             return false;
@@ -61,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         baseViewPagerAdapter.addFrag(favoritesFragment,"");
+        baseViewPagerAdapter.addFrag(libraryFragment,"");
+
 
 
         viewPager.setAdapter(baseViewPagerAdapter);

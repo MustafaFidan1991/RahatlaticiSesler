@@ -13,7 +13,7 @@ public class SongDetailPresenter  extends BasePresenter<SongDetailView> {
 
 
 
-    public void getFavouritesByUserId(int userId){
+    public void getItems(){
 
 
         view.showLoading();
@@ -27,7 +27,6 @@ public class SongDetailPresenter  extends BasePresenter<SongDetailView> {
             setSoundImageUrl("http://sansebastianregion.com/documents/1515268/1564963/san-sebastian-holidays-parque-aralar.jpg/987c0e27-16b8-4d5e-bfe6-3dd66a8a7425?t=1484001899000");
             setSoundName("Doğa");
             setSoundUrl("https://www.sample-videos.com/audio/mp3/crowd-cheering.mp3");
-            setTotalSecond(27);
         }});
 
         items.add(new Sound(){{
@@ -36,7 +35,6 @@ public class SongDetailPresenter  extends BasePresenter<SongDetailView> {
             setSoundImageUrl("http://sansebastianregion.com/documents/1515268/1564963/san-sebastian-holidays-parque-aralar.jpg/987c0e27-16b8-4d5e-bfe6-3dd66a8a7425?t=1484001899000");
             setSoundName("Ninni");
             setSoundUrl("https://www.sample-videos.com/audio/mp3/wave.mp3");
-            setTotalSecond(45);
         }});
 
         view.hideLoading();

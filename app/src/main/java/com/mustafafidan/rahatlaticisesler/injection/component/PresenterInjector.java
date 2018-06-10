@@ -4,7 +4,9 @@ package com.mustafafidan.rahatlaticisesler.injection.component;
 import com.mustafafidan.rahatlaticisesler.base.BaseView;
 import com.mustafafidan.rahatlaticisesler.injection.module.ContextModule;
 import com.mustafafidan.rahatlaticisesler.injection.module.NetworkModule;
+import com.mustafafidan.rahatlaticisesler.ui.detail.SongDetailPresenter;
 import com.mustafafidan.rahatlaticisesler.ui.favorites.FavoritesPresenter;
+import com.mustafafidan.rahatlaticisesler.ui.library.LibraryPresenter;
 
 import javax.inject.Singleton;
 
@@ -17,6 +19,8 @@ public interface PresenterInjector {
 
 
     void inject(FavoritesPresenter favoritesPresenter);
+    void inject(SongDetailPresenter songDetailPresenter);
+    void inject(LibraryPresenter libraryPresenter);
 
 
     @Component.Builder

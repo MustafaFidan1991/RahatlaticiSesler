@@ -55,38 +55,32 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
         binding.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
         binding.setAdapter(new BaseRecyclerViewAdapter(new ArrayList<Sound>(),getActivity().getBaseContext(),R.layout.fragment_favorites_item,BR.sound,presenter,BR.presenter,
                 (BaseRecyclerViewAdapter.OnItemValidateListener<Sound>) (itemBinding, data) -> {
-
                     if(itemBinding instanceof FragmentFavoritesItemBinding){
-
-                        AtomicBoolean isFirstPlay = new AtomicBoolean(true);
-                        AtomicBoolean isPrepareSuccess = new AtomicBoolean(false);
-                        AtomicInteger currentPosition = new AtomicInteger(0);
-                        AtomicBoolean isPause = new AtomicBoolean(false);
-
                         RxMediaPlayer mediaPlayer = RxMediaPlayer.create(new RxMediaPlayer.MediaPlayerListener() {
                             @Override
-                            public void onPrepareSuccess(long audioDuration) {
-                                isPrepareSuccess.set(true);
+                            public void onPrepareSuccess(long audioDuration) {}
+                            @Override
+                            public void onComplete(RxMediaPlayer mediaPlayer1) {
+                                mediaPlayer1.resume(0);
                             }
                         });
-
                         ((FragmentFavoritesItemBinding) itemBinding).playButton.setOnClickListener(view -> {
-                            if(isFirstPlay.get()){
+                            if(mediaPlayer.isFirstPlay()){
                                 mediaPlayer.play(data.getSoundUrl());
                                 ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
-                                isFirstPlay.set(false);
+                                mediaPlayer.setFirstPlay(false);
                             }
                             else{
-                                if(isPrepareSuccess.get()){
-                                    if(isPause.get()){
-                                        mediaPlayer.resume(currentPosition.get());
-                                        isPause.set(false);
+                                if(mediaPlayer.isPrepareSuccess()){
+                                    if(mediaPlayer.isPause()){
+                                        mediaPlayer.resume(mediaPlayer.getCurrentPosition());
+                                        mediaPlayer.setPause(false);
                                         ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
                                     }
                                     else{
                                         mediaPlayer.pause(()->{});
-                                        currentPosition.set(mediaPlayer.getCurrentPosition());
-                                        isPause.set(true);
+                                        mediaPlayer.setCurrentPosition(mediaPlayer.getCurrentPosition());
+                                        mediaPlayer.setPause(true);
                                         ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_circle));
                                     }
                                 }
@@ -102,10 +96,8 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
                                     mediaPlayer.setVolume(seekBar.getMax(),i);
                                 }
                             }
-
                             @Override
                             public void onStartTrackingTouch(SeekBar seekBar) {}
-
                             @Override
                             public void onStopTrackingTouch(SeekBar seekBar) {}
                         });
@@ -140,5 +132,11 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
     public void updateFavorites(List<Sound> favorites) {
         binding.getAdapter().update(favorites);
         binding.notifyChange();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onViewDestroyed();
     }
 }

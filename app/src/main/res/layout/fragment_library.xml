@@ -19,8 +19,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.activity.detail.detaillatestmovements.LatestMovementsFragment">
+        android:layout_height="match_parent">
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_centerInParent="true"
