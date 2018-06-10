@@ -81,7 +81,6 @@ public class SongDetailActivity extends BaseActivity<SongDetailPresenter,Activit
                                     ((ActivitySongDetailItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_circle));
                                 }
                             }
-
                         }
                     });
 
