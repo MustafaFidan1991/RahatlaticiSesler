@@ -16,7 +16,7 @@ import com.mustafafidan.rahatlaticisesler.base.BaseRecyclerViewAdapter;
 import com.mustafafidan.rahatlaticisesler.databinding.FragmentFavoritesBinding;
 import com.mustafafidan.rahatlaticisesler.databinding.FragmentFavoritesItemBinding;
 import com.mustafafidan.rahatlaticisesler.model.Sound;
-import com.mustafafidan.rahatlaticisesler.utils.RxMediaPlayer;
+import com.mustafafidan.rahatlaticisesler.utils.RxMediaPlayerManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,11 +62,11 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
 
 
                         // media player her item için oluşturuluyor
-                        RxMediaPlayer mediaPlayer = RxMediaPlayer.create(new RxMediaPlayer.MediaPlayerListener() {
+                        RxMediaPlayerManager mediaPlayer = RxMediaPlayerManager.create(new RxMediaPlayerManager.MediaPlayerListener() {
                             @Override
                             public void onPrepareSuccess(long audioDuration) {}
                             @Override
-                            public void onComplete(RxMediaPlayer mediaPlayer1) {
+                            public void onComplete(RxMediaPlayerManager mediaPlayer1) {
                                 if(!mediaPlayer1.isPause()){
                                     mediaPlayer1.resume(0);
                                 }

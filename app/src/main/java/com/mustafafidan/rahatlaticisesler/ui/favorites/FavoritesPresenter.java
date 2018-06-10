@@ -3,7 +3,7 @@ package com.mustafafidan.rahatlaticisesler.ui.favorites;
 import com.mustafafidan.rahatlaticisesler.base.BasePresenter;
 import com.mustafafidan.rahatlaticisesler.model.Sound;
 import com.mustafafidan.rahatlaticisesler.network.FavoritesApi;
-import com.mustafafidan.rahatlaticisesler.utils.RxMediaPlayer;
+import com.mustafafidan.rahatlaticisesler.utils.RxMediaPlayerManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,7 +18,7 @@ import io.reactivex.schedulers.Schedulers;
 public class FavoritesPresenter extends BasePresenter<FavoritesView> {
 
 
-    private ArrayList<RxMediaPlayer> mediaPlayers = new ArrayList<>();
+    private ArrayList<RxMediaPlayerManager> mediaPlayers = new ArrayList<>();
 
 
     @Inject
@@ -73,17 +73,17 @@ public class FavoritesPresenter extends BasePresenter<FavoritesView> {
     }
 
 
-    public void addMediaPlayer(RxMediaPlayer mediaPlayer){
+    public void addMediaPlayer(RxMediaPlayerManager mediaPlayer){
         mediaPlayers.add(mediaPlayer);
     }
 
-    public void clearMediaPlayer(RxMediaPlayer mediaPlayer){
+    public void clearMediaPlayer(RxMediaPlayerManager mediaPlayer){
         mediaPlayer.clear();
     }
 
 
     public void clearAllMediaPlayer(){
-        for(RxMediaPlayer mediaPlayer:mediaPlayers){
+        for(RxMediaPlayerManager mediaPlayer:mediaPlayers){
             mediaPlayer.clear();
         }
     }
