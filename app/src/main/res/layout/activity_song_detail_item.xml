@@ -62,11 +62,11 @@
                     android:layout_height="wrap_content" />
 
                 <ImageButton
+                    android:src="@{sound.isFavorite ?  @drawable/ic_favorite_filled : @drawable/ic_favorite_empty}"
                     android:id="@+id/favoriteButton"
                     android:layout_marginLeft="10dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/ic_favorite_filled"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
 

@@ -1,44 +1,34 @@
 package com.mustafafidan.rahatlaticisesler.ui.favorites;
 
 
-import android.databinding.ViewDataBinding;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 
 import com.mustafafidan.rahatlaticisesler.BR;
 import com.mustafafidan.rahatlaticisesler.R;
 import com.mustafafidan.rahatlaticisesler.base.BaseFragment;
 import com.mustafafidan.rahatlaticisesler.base.BaseRecyclerViewAdapter;
 import com.mustafafidan.rahatlaticisesler.databinding.FragmentFavoritesBinding;
+import com.mustafafidan.rahatlaticisesler.databinding.FragmentFavoritesItemBinding;
 import com.mustafafidan.rahatlaticisesler.model.Sound;
+import com.mustafafidan.rahatlaticisesler.utils.RxMediaPlayer;
 
 
-import org.reactivestreams.Subscription;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentFavoritesBinding> implements FavoritesView {
 
     public static FavoritesFragment newInstance() {
         FavoritesFragment fragment = new FavoritesFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -64,44 +54,66 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
 
         binding.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
         binding.setAdapter(new BaseRecyclerViewAdapter(new ArrayList<Sound>(),getActivity().getBaseContext(),R.layout.fragment_favorites_item,BR.sound,presenter,BR.presenter,
-                new BaseRecyclerViewAdapter.OnItemValidateListener<Sound>() {
-            @Override
-            public void onItemValidate(ViewDataBinding binding, Sound data) {
+                (BaseRecyclerViewAdapter.OnItemValidateListener<Sound>) (itemBinding, data) -> {
 
-            }
-        }));
+                    if(itemBinding instanceof FragmentFavoritesItemBinding){
+
+                        AtomicBoolean isFirstPlay = new AtomicBoolean(true);
+                        AtomicBoolean isPrepareSuccess = new AtomicBoolean(false);
+                        AtomicInteger currentPosition = new AtomicInteger(0);
+                        AtomicBoolean isPause = new AtomicBoolean(false);
+
+                        RxMediaPlayer mediaPlayer = RxMediaPlayer.create(new RxMediaPlayer.MediaPlayerListener() {
+                            @Override
+                            public void onPrepareSuccess(long audioDuration) {
+                                isPrepareSuccess.set(true);
+                            }
+                        });
+
+                        ((FragmentFavoritesItemBinding) itemBinding).playButton.setOnClickListener(view -> {
+                            if(isFirstPlay.get()){
+                                mediaPlayer.play(data.getSoundUrl());
+                                ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
+                                isFirstPlay.set(false);
+                            }
+                            else{
+                                if(isPrepareSuccess.get()){
+                                    if(isPause.get()){
+                                        mediaPlayer.resume(currentPosition.get());
+                                        isPause.set(false);
+                                        ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
+                                    }
+                                    else{
+                                        mediaPlayer.pause(()->{});
+                                        currentPosition.set(mediaPlayer.getCurrentPosition());
+                                        isPause.set(true);
+                                        ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_circle));
+                                    }
+                                }
+
+                            }
+                        });
 
 
-        final MediaPlayer mediaPlayer = new MediaPlayer();
-        try {
-            mediaPlayer.setDataSource("https://www.sample-videos.com/audio/mp3/wave.mp3");
-            mediaPlayer.prepare();
-            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
+                        ((FragmentFavoritesItemBinding) itemBinding).seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                            @Override
+                            public void onProgressChanged(SeekBar seekBar, int i, boolean fromUser) {
+                                if(fromUser){
+                                    mediaPlayer.setVolume(seekBar.getMax(),i);
+                                }
+                            }
 
-                }
-            });
-            mediaPlayer.start();
+                            @Override
+                            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+                            @Override
+                            public void onStopTrackingTouch(SeekBar seekBar) {}
+                        });
 
 
-            Disposable subscription = Observable.timer(1000, TimeUnit.MILLISECONDS)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<Long>() {
-                        @Override
-                        public void accept(Long aLong) throws Exception {
+                    }
 
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-
-                        }
-                    });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                }));
 
         presenter.getFavouritesByUserId(1);
 
@@ -113,12 +125,15 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
 
     @Override
     public void showLoading() {
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.recyclerView.setVisibility(View.GONE);
 
     }
 
     @Override
     public void hideLoading() {
-
+        binding.progressBar.setVisibility(View.GONE);
+        binding.recyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override

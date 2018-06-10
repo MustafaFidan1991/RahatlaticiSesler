@@ -18,6 +18,7 @@ public class Sound extends BaseModel {
 
     int totalSecond;
 
+    boolean isFavorite = false;
 
     public int getTotalSecond() {
         return totalSecond;
@@ -65,5 +66,14 @@ public class Sound extends BaseModel {
 
     public void setSoundImageUrl(String soundImageUrl) {
         this.soundImageUrl = soundImageUrl;
+    }
+
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 }

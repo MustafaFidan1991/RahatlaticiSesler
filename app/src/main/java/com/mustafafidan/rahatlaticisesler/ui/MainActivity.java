@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.mustafafidan.rahatlaticisesler.R;
 import com.mustafafidan.rahatlaticisesler.base.BaseViewPagerAdapter;
 import com.mustafafidan.rahatlaticisesler.ui.favorites.FavoritesFragment;
+import com.mustafafidan.rahatlaticisesler.ui.library.LibraryFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -56,9 +57,11 @@ public class MainActivity extends AppCompatActivity {
         BaseViewPagerAdapter baseViewPagerAdapter = new BaseViewPagerAdapter(getSupportFragmentManager());
 
         FavoritesFragment favoritesFragment = FavoritesFragment.newInstance();
+        LibraryFragment libraryFragment = LibraryFragment.newInstance();
 
 
         baseViewPagerAdapter.addFrag(favoritesFragment,"");
+
 
         viewPager.setAdapter(baseViewPagerAdapter);
 

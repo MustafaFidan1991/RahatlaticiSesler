@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <data>
+        <variable
+            name="category"
+            type="com.mustafafidan.rahatlaticisesler.model.Category"/>
+    </data>
+    <android.support.v7.widget.CardView
+        android:background="@color/colorPrimaryDark"
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/favorite_item_height"
+        android:layout_margin="5dp"
+        app:cardCornerRadius="@dimen/favorite_item_radius"
+        app:cardElevation="@dimen/favorite_item_card_elevation">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:foreground="@color/colorBg"
+                app:image_url="@{category.categoryImageUrl}"
+                android:id="@+id/image3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:textSize="14sp"
+                android:text="@{category.categoryName}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textColor="@android:color/white" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</layout>
