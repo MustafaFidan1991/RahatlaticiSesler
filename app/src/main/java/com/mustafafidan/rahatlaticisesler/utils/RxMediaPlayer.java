@@ -20,6 +20,16 @@ import io.reactivex.schedulers.Schedulers;
 public class RxMediaPlayer extends MediaPlayer {
 
 
+    /*
+    * Tamamen reactive x 'le uyumlu ve asenkron çalışabilen bir mediaplayer
+    * bir media playerda kullanılabilecek durdur,oynat,devam et, ses aç kapa gibi tüm özellikler vardır
+    *
+    *
+    * Hata istenilmemesine rağmen her saniyede bir arayüz güncellemede sağlanabilir.
+    *
+    * */
+
+
     boolean isFirstPlay = true;
     boolean isPrepareSuccess = false;
     int currentPosition = 0;
@@ -27,13 +37,7 @@ public class RxMediaPlayer extends MediaPlayer {
 
     MediaPlayerListener mediaPlayerListener;
 
-    public MediaPlayerListener getMediaPlayerListener() {
-        return mediaPlayerListener;
-    }
 
-    public void setMediaPlayerListener(MediaPlayerListener mediaPlayerListener) {
-        this.mediaPlayerListener = mediaPlayerListener;
-    }
 
     private final CompositeDisposable disposables = new CompositeDisposable();
 
@@ -48,6 +52,12 @@ public class RxMediaPlayer extends MediaPlayer {
 
     }
 
+
+
+    /**
+     *  ses dosyasını çalıştırmak için
+     * @param  mediaPlayerListener en başta media player'ı oluşturmak için
+     */
     public static @NotNull RxMediaPlayer create(MediaPlayerListener mediaPlayerListener) {
         final RxMediaPlayer player = new RxMediaPlayer();
         player.setMediaPlayerListener(mediaPlayerListener);
@@ -55,6 +65,10 @@ public class RxMediaPlayer extends MediaPlayer {
         return player;
     }
 
+    /**
+     *  ses dosyasını çalıştırmak için
+     * @param  url istenilen url'den ses dosyasını çalıştırmak için
+     */
     public void play(String url) {
         try {
             this.setDataSource(url);
@@ -64,20 +78,31 @@ public class RxMediaPlayer extends MediaPlayer {
         }
     }
 
+    /**
+     * ilk sefer çalındığında çağrılır
+     */
     public void play() {
         preapareAudio(() -> { stream(this::ticks); });
     }
 
 
+    /**
+     * durmuş veya bitmiş olan ses dosyasını devam ettirmek için
+     * @param position istenilen pozisyon da tekrardan çalıştırmak için
+     */
     public void resume(int position){
         clear();
         resume(position,()->{stream(this::ticks);});
     }
 
-
+    /**
+     * çalınmakta olan ses dosyasını durdurmak için
+     * @param successListener asenkron olarak çalıştırıldıktan sonra successListener.onSuccess(); tetiklenir
+     */
     public void pause(SuccessListener successListener){
         Observable<RxMediaPlayer> observable = Observable.create(emitter -> {
             RxMediaPlayer.this.pause();
+            isPause = true;
             emitter.onNext(RxMediaPlayer.this);
             emitter.onComplete();
         });
@@ -87,6 +112,11 @@ public class RxMediaPlayer extends MediaPlayer {
     }
 
 
+    /**
+     * durdurulmuş ses dosyasını tekrardan istenilen pozisyondan çağırır
+     * @param maxVolume mediaplayerın max volume değeri
+     * @param  currVolume atanmak istenen volume değeri
+     */
     public void setVolume(int maxVolume,int currVolume){
 
         float volume=1-(float)(Math.log(maxVolume-currVolume)/Math.log(maxVolume));
@@ -99,9 +129,15 @@ public class RxMediaPlayer extends MediaPlayer {
     }
 
 
+    /**
+     * durdurulmuş ses dosyasını tekrardan istenilen pozisyondan çağırır
+     * @param position istenilen pozisyon pass edilir
+     * @param  successListener asenkron olarak çalıştırıldıktan sonra successListener.onSuccess(); tetiklenir
+     */
     void resume(int position,SuccessListener successListener){
         Observable<RxMediaPlayer> observable = Observable.create(emitter -> {
             RxMediaPlayer.this.seekTo(position);
+            isPause = false;
             emitter.onNext(RxMediaPlayer.this);
             emitter.onComplete();
         });
@@ -114,7 +150,10 @@ public class RxMediaPlayer extends MediaPlayer {
 
 
 
-
+    /**
+     * İlgili source'tan prepare yapmak için bu fonksiyon çağrılır
+     * @param successListener asenkron olarak çalıştırıldıktan sonra successListener.onSuccess(); tetiklenir
+     */
     private void preapareAudio(SuccessListener successListener) {
         Observable<RxMediaPlayer> observable = Observable.create(emitter -> {
             try {
@@ -137,6 +176,11 @@ public class RxMediaPlayer extends MediaPlayer {
         ));
     }
 
+
+    /**
+     * İlgili source'tan stream yapmak için bu fonksiyon çağrılır
+     * @param successListener asenkron olarak çalıştırıldıktan sonra successListener.onSuccess(); tetiklenir
+     */
     private void stream(SuccessListener successListener) {
         Observable<RxMediaPlayer> observable = Observable.create(emitter -> {
             RxMediaPlayer.this.start();
@@ -149,8 +193,9 @@ public class RxMediaPlayer extends MediaPlayer {
     }
 
 
-
-    // arayüzü güncellemek için saniyede bir tetiklenir
+    /**
+     * arayüzü güncellemek için saniyede bir tetiklenir
+     */
     private void ticks() {
         disposables.add(Observable.interval(1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -211,6 +256,14 @@ public class RxMediaPlayer extends MediaPlayer {
     public CompositeDisposable getDisposables() {
         return disposables;
     }
+    public MediaPlayerListener getMediaPlayerListener() {
+        return mediaPlayerListener;
+    }
+
+    public void setMediaPlayerListener(MediaPlayerListener mediaPlayerListener) {
+        this.mediaPlayerListener = mediaPlayerListener;
+    }
+
 
     //Memory hatalarına engel olmak için
     private void clear(){

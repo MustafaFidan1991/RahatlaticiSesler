@@ -33,6 +33,7 @@
                 android:scaleType="centerCrop" />
 
             <TextView
+                android:padding="10dp"
                 android:textStyle="bold"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -51,17 +52,19 @@
                 android:layout_alignParentLeft="true"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="50dp">
                 <SeekBar
                     android:progress="50"
                     android:max="50"
                     android:id="@+id/seekBar"
-                    android:layout_weight="7"
+                    android:layout_weight="5"
                     android:layout_gravity="center_vertical"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
 
                 <ImageButton
+                    android:padding="10dp"
+                    android:layout_gravity="center_vertical"
                     android:id="@+id/favoriteButton"
                     android:layout_marginLeft="10dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
@@ -72,6 +75,7 @@
 
 
                 <ImageButton
+                    android:padding="10dp"
                     android:id="@+id/playButton"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="center_vertical"

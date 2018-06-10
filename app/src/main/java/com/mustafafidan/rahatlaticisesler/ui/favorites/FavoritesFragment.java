@@ -13,6 +13,7 @@ import com.mustafafidan.rahatlaticisesler.BR;
 import com.mustafafidan.rahatlaticisesler.R;
 import com.mustafafidan.rahatlaticisesler.base.BaseFragment;
 import com.mustafafidan.rahatlaticisesler.base.BaseRecyclerViewAdapter;
+import com.mustafafidan.rahatlaticisesler.databinding.ActivitySongDetailItemBinding;
 import com.mustafafidan.rahatlaticisesler.databinding.FragmentFavoritesBinding;
 import com.mustafafidan.rahatlaticisesler.databinding.FragmentFavoritesItemBinding;
 import com.mustafafidan.rahatlaticisesler.model.Sound;
@@ -53,34 +54,40 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
         super.onCreateView(inflater,container,savedInstanceState);
 
         binding.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
-        binding.setAdapter(new BaseRecyclerViewAdapter(new ArrayList<Sound>(),getActivity().getBaseContext(),R.layout.fragment_favorites_item,BR.sound,presenter,BR.presenter,
-                (BaseRecyclerViewAdapter.OnItemValidateListener<Sound>) (itemBinding, data) -> {
+        binding.setAdapter(new BaseRecyclerViewAdapter<Sound>(new ArrayList<>(),getActivity().getBaseContext(),R.layout.fragment_favorites_item,BR.sound,presenter,BR.presenter,
+                (itemBinding, data) -> {
                     if(itemBinding instanceof FragmentFavoritesItemBinding){
+
+
+                        // media player her item için oluşturuluyor
                         RxMediaPlayer mediaPlayer = RxMediaPlayer.create(new RxMediaPlayer.MediaPlayerListener() {
                             @Override
                             public void onPrepareSuccess(long audioDuration) {}
                             @Override
                             public void onComplete(RxMediaPlayer mediaPlayer1) {
-                                mediaPlayer1.resume(0);
+                                if(!mediaPlayer1.isPause()){
+                                    mediaPlayer1.resume(0);
+                                }
                             }
                         });
+
+
+                        //play butonuna basılınca çalıştırılıyor
                         ((FragmentFavoritesItemBinding) itemBinding).playButton.setOnClickListener(view -> {
-                            if(mediaPlayer.isFirstPlay()){
+                            if(mediaPlayer.isFirstPlay()){ //ilk kere çalındığı zaman prepare edliyor
                                 mediaPlayer.play(data.getSoundUrl());
                                 ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
                                 mediaPlayer.setFirstPlay(false);
                             }
                             else{
                                 if(mediaPlayer.isPrepareSuccess()){
-                                    if(mediaPlayer.isPause()){
+                                    if(mediaPlayer.isPause()){ //durduma
                                         mediaPlayer.resume(mediaPlayer.getCurrentPosition());
-                                        mediaPlayer.setPause(false);
                                         ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
                                     }
-                                    else{
+                                    else{ // devam etme
                                         mediaPlayer.pause(()->{});
-                                        mediaPlayer.setCurrentPosition(mediaPlayer.getCurrentPosition());
-                                        mediaPlayer.setPause(true);
+                                        mediaPlayer.setCurrentPosition(mediaPlayer.getCurrentPosition());//son kalınan pozisyon kaydediliyor
                                         ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_circle));
                                     }
                                 }
@@ -93,6 +100,8 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
                             @Override
                             public void onProgressChanged(SeekBar seekBar, int i, boolean fromUser) {
                                 if(fromUser){
+
+                                    // seek barın değişimine göre volume atanıyor
                                     mediaPlayer.setVolume(seekBar.getMax(),i);
                                 }
                             }
@@ -102,6 +111,12 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
                             public void onStopTrackingTouch(SeekBar seekBar) {}
                         });
 
+
+                        ((FragmentFavoritesItemBinding) itemBinding).favoriteButton.setOnClickListener(view -> {
+                            if(!data.isFavorite()){
+                                presenter.removeFromList(binding.getAdapter().getItems(),data);
+                            }
+                        });
 
                     }
 
@@ -138,5 +153,11 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
     public void onDestroy() {
         super.onDestroy();
         presenter.onViewDestroyed();
+    }
+
+
+
+    public void updateItems(List<Sound> favoriteItems,List<Sound> unFavoriteItems){
+        presenter.updateItems(favoriteItems,unFavoriteItems,binding.getAdapter().getItems());
     }
 }

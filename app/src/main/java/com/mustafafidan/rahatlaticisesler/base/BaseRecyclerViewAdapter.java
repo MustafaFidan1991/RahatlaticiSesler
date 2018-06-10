@@ -57,6 +57,10 @@ public class BaseRecyclerViewAdapter<T extends BaseModel> extends RecyclerView.A
     }
 
 
+    public List<T> getItems(){
+        return entityList;
+    }
+
     public void update(List<T>entityList) {
         this.entityList = entityList;
         notifyDataSetChanged();

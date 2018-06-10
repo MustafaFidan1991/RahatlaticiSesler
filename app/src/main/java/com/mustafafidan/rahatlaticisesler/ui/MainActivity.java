@@ -1,5 +1,6 @@
 package com.mustafafidan.rahatlaticisesler.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -10,13 +11,23 @@ import android.widget.TextView;
 
 import com.mustafafidan.rahatlaticisesler.R;
 import com.mustafafidan.rahatlaticisesler.base.BaseViewPagerAdapter;
+import com.mustafafidan.rahatlaticisesler.model.Sound;
 import com.mustafafidan.rahatlaticisesler.ui.favorites.FavoritesFragment;
 import com.mustafafidan.rahatlaticisesler.ui.library.LibraryFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
 
     private ViewPager viewPager;
+
+
+    FavoritesFragment favoritesFragment = null;
+    LibraryFragment libraryFragment = null;
+
+    public static final int SONG_DETAIL_CODE = 1;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -40,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        viewPager = (ViewPager)findViewById(R.id.viewpager);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        viewPager = findViewById(R.id.viewpager);
+        BottomNavigationView navigation =  findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
@@ -53,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
         BaseViewPagerAdapter baseViewPagerAdapter = new BaseViewPagerAdapter(getSupportFragmentManager());
 
-        FavoritesFragment favoritesFragment = FavoritesFragment.newInstance();
-        LibraryFragment libraryFragment = LibraryFragment.newInstance();
+        favoritesFragment = FavoritesFragment.newInstance();
+        libraryFragment = LibraryFragment.newInstance();
 
 
         baseViewPagerAdapter.addFrag(favoritesFragment,"");
@@ -63,8 +74,23 @@ public class MainActivity extends AppCompatActivity {
 
 
         viewPager.setAdapter(baseViewPagerAdapter);
-
-
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+        if(SONG_DETAIL_CODE == requestCode){
+            Bundle bundle = data.getExtras();
+            List<Sound> favoriteItems = (ArrayList<Sound>) bundle.getSerializable("favoriteItems");
+            List<Sound> unFavoriteItems = (ArrayList<Sound>)bundle.getSerializable("unFavoriteItems");
+
+            favoritesFragment.updateItems(favoriteItems,unFavoriteItems);
+
+        }
+
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

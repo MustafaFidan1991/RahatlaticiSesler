@@ -20,6 +20,7 @@ import com.mustafafidan.rahatlaticisesler.databinding.FragmentLibraryBinding;
 import com.mustafafidan.rahatlaticisesler.databinding.FragmentLibraryItemBinding;
 import com.mustafafidan.rahatlaticisesler.model.Category;
 import com.mustafafidan.rahatlaticisesler.model.Sound;
+import com.mustafafidan.rahatlaticisesler.ui.MainActivity;
 import com.mustafafidan.rahatlaticisesler.ui.detail.SongDetailActivity;
 import com.mustafafidan.rahatlaticisesler.ui.favorites.FavoritesFragment;
 
@@ -56,14 +57,14 @@ public class LibraryFragment extends BaseFragment<LibraryPresenter,FragmentLibra
 
         super.onCreateView(inflater,container,savedInstanceState);
         binding.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
-        binding.setAdapter(new BaseRecyclerViewAdapter(new ArrayList<Category>(), getActivity().getBaseContext(), R.layout.fragment_library_item, BR.category, presenter, BR.presenter, new BaseRecyclerViewAdapter.OnItemValidateListener() {
-            @Override
-            public void onItemValidate(ViewDataBinding binding, BaseModel data) {
-                if(binding instanceof FragmentLibraryItemBinding){
-                    ((FragmentLibraryItemBinding)binding).cardView.setOnClickListener((v)->{
-                        LibraryFragment.this.getActivity().startActivity(new Intent(LibraryFragment.this.getActivity(),SongDetailActivity.class));
-                    });
-                }
+        binding.setAdapter(new BaseRecyclerViewAdapter<Category>(new ArrayList<>(), getActivity().getBaseContext(), R.layout.fragment_library_item, BR.category, presenter, BR.presenter,
+                (binding, data) -> {
+            if(binding instanceof FragmentLibraryItemBinding){
+                ((FragmentLibraryItemBinding)binding).cardView.setOnClickListener((v)->{
+                    Intent intent = new Intent(LibraryFragment.this.getActivity(),SongDetailActivity.class);
+                    intent.putExtra("categoryId",data.getCategoryId());
+                    LibraryFragment.this.getActivity().startActivityForResult(intent,MainActivity.SONG_DETAIL_CODE);
+                });
             }
         }));
 

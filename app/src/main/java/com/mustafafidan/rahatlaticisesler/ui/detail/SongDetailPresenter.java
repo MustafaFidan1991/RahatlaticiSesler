@@ -1,44 +1,97 @@
 package com.mustafafidan.rahatlaticisesler.ui.detail;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import com.mustafafidan.rahatlaticisesler.base.BasePresenter;
 import com.mustafafidan.rahatlaticisesler.model.Sound;
+import com.mustafafidan.rahatlaticisesler.network.SongDetailApi;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class SongDetailPresenter  extends BasePresenter<SongDetailView> {
+
+    @Inject
+    SongDetailApi songDetailApi;
+
+
+    private Disposable subscription = null;
+
+
+    ArrayList<Sound> favoriteItems = new ArrayList<Sound>();
+    ArrayList<Sound> unFavoriteItems = new ArrayList<Sound>();
+
+
+
     public SongDetailPresenter(SongDetailView view) {
         super(view);
     }
 
 
+    public void addFavoriteItems(Sound sound){
+        favoriteItems.add(sound);
+    }
 
-    public void getItems(){
+    public void removeFavoriteItems(Sound sound){
+        favoriteItems.remove(sound);
+    }
+
+    public void addUnFavoriteItems(Sound sound){
+        unFavoriteItems.add(sound);
+    }
+
+    public void removeUnFavoriteItems(Sound sound){
+        unFavoriteItems.remove(sound);
+    }
+
+
+
+
+
+    public void getItems(int categoryId){
 
 
         view.showLoading();
+        subscription = songDetailApi
+                .getSongDetail("/rahatlaticisesler/"+String.valueOf(categoryId)+".html")
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doOnTerminate(() -> {
+                    view.hideLoading();
+                }).subscribe(listBaseResponse -> {
+                    // gelen data
+                    view.updateItems(listBaseResponse.getValue());
+
+                }, throwable -> {
+                    /// hata alınan kısım
+                });
+
+    }
 
 
-        List<Sound> items = new ArrayList<>();
 
-        items.add(new Sound(){{
-            setCategoryId(1);
-            setSoundId(1);
-            setSoundImageUrl("http://sansebastianregion.com/documents/1515268/1564963/san-sebastian-holidays-parque-aralar.jpg/987c0e27-16b8-4d5e-bfe6-3dd66a8a7425?t=1484001899000");
-            setSoundName("Doğa");
-            setSoundUrl("https://www.sample-videos.com/audio/mp3/crowd-cheering.mp3");
-        }});
+    public Intent getResultIntent(){
+        Intent intent = new Intent();
 
-        items.add(new Sound(){{
-            setCategoryId(2);
-            setSoundId(2);
-            setSoundImageUrl("http://sansebastianregion.com/documents/1515268/1564963/san-sebastian-holidays-parque-aralar.jpg/987c0e27-16b8-4d5e-bfe6-3dd66a8a7425?t=1484001899000");
-            setSoundName("Ninni");
-            setSoundUrl("https://www.sample-videos.com/audio/mp3/wave.mp3");
-        }});
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("favoriteItems", favoriteItems);
+        bundle.putSerializable("unFavoriteItems", unFavoriteItems);
+        intent.putExtras(bundle);
 
-        view.hideLoading();
-        view.updateItems(items);
 
+        return intent;
+    }
+
+    @Override
+    protected void onViewDestroyed() {
+        super.onViewDestroyed();
+        subscription.dispose();
     }
 }
