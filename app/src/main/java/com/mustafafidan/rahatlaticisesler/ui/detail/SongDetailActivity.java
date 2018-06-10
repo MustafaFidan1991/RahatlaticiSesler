@@ -1,9 +1,6 @@
 package com.mustafafidan.rahatlaticisesler.ui.detail;
 
 import android.content.Context;
-import android.content.Intent;
-import android.databinding.ViewDataBinding;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.MenuItem;
@@ -16,7 +13,6 @@ import com.mustafafidan.rahatlaticisesler.base.BaseActivity;
 import com.mustafafidan.rahatlaticisesler.base.BaseRecyclerViewAdapter;
 import com.mustafafidan.rahatlaticisesler.databinding.ActivitySongDetailBinding;
 import com.mustafafidan.rahatlaticisesler.databinding.ActivitySongDetailItemBinding;
-import com.mustafafidan.rahatlaticisesler.databinding.FragmentFavoritesItemBinding;
 import com.mustafafidan.rahatlaticisesler.model.Sound;
 import com.mustafafidan.rahatlaticisesler.utils.RxMediaPlayer;
 
@@ -64,6 +60,7 @@ public class SongDetailActivity extends BaseActivity<SongDetailPresenter,Activit
                         }
                     });
 
+                    presenter.addMediaPlayer(mediaPlayer);
 
                     //play butonuna basılınca çalıştırılıyor
                     ((ActivitySongDetailItemBinding) itemBinding).playButton.setOnClickListener(view -> {
@@ -75,12 +72,12 @@ public class SongDetailActivity extends BaseActivity<SongDetailPresenter,Activit
                         else{
                             if(mediaPlayer.isPrepareSuccess()){
                                 if(mediaPlayer.isPause()){ //durduma
-                                    mediaPlayer.resume(mediaPlayer.getCurrentPosition());
+                                    mediaPlayer.resume(mediaPlayer.getLastPosition());
                                     ((ActivitySongDetailItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
                                 }
                                 else{ // devam etme
                                     mediaPlayer.pause(()->{});
-                                    mediaPlayer.setCurrentPosition(mediaPlayer.getCurrentPosition());//son kalınan pozisyon kaydediliyor
+                                    mediaPlayer.setLastPosition(mediaPlayer.getLastPosition());//son kalınan pozisyon kaydediliyor
                                     ((ActivitySongDetailItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_circle));
                                 }
                             }
@@ -141,6 +138,7 @@ public class SongDetailActivity extends BaseActivity<SongDetailPresenter,Activit
      *
      * */
     public void finishActivity(){
+        presenter.clearAllMediaPlayer();
         setResult(RESULT_OK,presenter.getResultIntent());
         finish();
     }

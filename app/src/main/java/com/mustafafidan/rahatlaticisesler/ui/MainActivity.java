@@ -60,6 +60,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+    /*
+    *
+    * viewpager'a fragment'lar ekleniyor
+    *
+    * */
     void setupViewPager(){
 
         BaseViewPagerAdapter baseViewPagerAdapter = new BaseViewPagerAdapter(getSupportFragmentManager());

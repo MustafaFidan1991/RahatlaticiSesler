@@ -1,12 +1,7 @@
 package com.mustafafidan.rahatlaticisesler.ui.library;
 
 import com.mustafafidan.rahatlaticisesler.base.BasePresenter;
-import com.mustafafidan.rahatlaticisesler.model.Category;
-import com.mustafafidan.rahatlaticisesler.model.Sound;
 import com.mustafafidan.rahatlaticisesler.network.LibraryApi;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 

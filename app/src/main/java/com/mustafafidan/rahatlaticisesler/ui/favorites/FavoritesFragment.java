@@ -13,20 +13,18 @@ import com.mustafafidan.rahatlaticisesler.BR;
 import com.mustafafidan.rahatlaticisesler.R;
 import com.mustafafidan.rahatlaticisesler.base.BaseFragment;
 import com.mustafafidan.rahatlaticisesler.base.BaseRecyclerViewAdapter;
-import com.mustafafidan.rahatlaticisesler.databinding.ActivitySongDetailItemBinding;
 import com.mustafafidan.rahatlaticisesler.databinding.FragmentFavoritesBinding;
 import com.mustafafidan.rahatlaticisesler.databinding.FragmentFavoritesItemBinding;
 import com.mustafafidan.rahatlaticisesler.model.Sound;
 import com.mustafafidan.rahatlaticisesler.utils.RxMediaPlayer;
 
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentFavoritesBinding> implements FavoritesView {
+
+
+
 
     public static FavoritesFragment newInstance() {
         FavoritesFragment fragment = new FavoritesFragment();
@@ -59,6 +57,10 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
                     if(itemBinding instanceof FragmentFavoritesItemBinding){
 
 
+
+                        ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_circle));
+
+
                         // media player her item için oluşturuluyor
                         RxMediaPlayer mediaPlayer = RxMediaPlayer.create(new RxMediaPlayer.MediaPlayerListener() {
                             @Override
@@ -72,6 +74,10 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
                         });
 
 
+                        presenter.addMediaPlayer(mediaPlayer);
+
+
+
                         //play butonuna basılınca çalıştırılıyor
                         ((FragmentFavoritesItemBinding) itemBinding).playButton.setOnClickListener(view -> {
                             if(mediaPlayer.isFirstPlay()){ //ilk kere çalındığı zaman prepare edliyor
@@ -82,12 +88,12 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
                             else{
                                 if(mediaPlayer.isPrepareSuccess()){
                                     if(mediaPlayer.isPause()){ //durduma
-                                        mediaPlayer.resume(mediaPlayer.getCurrentPosition());
+                                        mediaPlayer.resume(mediaPlayer.getLastPosition());
                                         ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
                                     }
                                     else{ // devam etme
                                         mediaPlayer.pause(()->{});
-                                        mediaPlayer.setCurrentPosition(mediaPlayer.getCurrentPosition());//son kalınan pozisyon kaydediliyor
+                                        mediaPlayer.setLastPosition(mediaPlayer.getLastPosition());//son kalınan pozisyon kaydediliyor
                                         ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_circle));
                                     }
                                 }
@@ -113,7 +119,7 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
 
 
                         ((FragmentFavoritesItemBinding) itemBinding).favoriteButton.setOnClickListener(view -> {
-                            if(!data.isFavorite()){
+                            if(data.isFavorite()){
                                 presenter.removeFromList(binding.getAdapter().getItems(),data);
                             }
                         });
@@ -138,10 +144,9 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
      *
      * */
     public void updateItems(List<Sound> favoriteItems,List<Sound> unFavoriteItems){
+
         presenter.updateItems(favoriteItems,unFavoriteItems,binding.getAdapter().getItems());
     }
-
-
 
     @Override
     public void showLoading() {
@@ -158,6 +163,7 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
 
     @Override
     public void updateFavorites(List<Sound> favorites) {
+        presenter.clearAllMediaPlayer();
         binding.getAdapter().update(favorites);
         binding.notifyChange();
     }

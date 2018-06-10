@@ -3,15 +3,13 @@ package com.mustafafidan.rahatlaticisesler.utils;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
@@ -32,7 +30,7 @@ public class RxMediaPlayer extends MediaPlayer {
 
     boolean isFirstPlay = true;
     boolean isPrepareSuccess = false;
-    int currentPosition = 0;
+    int lastPosition = 0;
     boolean isPause = false;
 
     MediaPlayerListener mediaPlayerListener;
@@ -101,6 +99,7 @@ public class RxMediaPlayer extends MediaPlayer {
      */
     public void pause(SuccessListener successListener){
         Observable<RxMediaPlayer> observable = Observable.create(emitter -> {
+            lastPosition = getCurrentPosition();
             RxMediaPlayer.this.pause();
             isPause = true;
             emitter.onNext(RxMediaPlayer.this);
@@ -236,15 +235,6 @@ public class RxMediaPlayer extends MediaPlayer {
         isPrepareSuccess = prepareSuccess;
     }
 
-    @Override
-    public int getCurrentPosition() {
-        return currentPosition;
-    }
-
-    public void setCurrentPosition(int currentPosition) {
-        this.currentPosition = currentPosition;
-    }
-
     public boolean isPause() {
         return isPause;
     }
@@ -264,9 +254,37 @@ public class RxMediaPlayer extends MediaPlayer {
         this.mediaPlayerListener = mediaPlayerListener;
     }
 
+    public int getLastPosition() {
+        return lastPosition;
+    }
+
+    public void setLastPosition(int lastPosition) {
+        this.lastPosition = lastPosition;
+    }
 
     //Memory hatalarına engel olmak için
-    private void clear(){
-        disposables.clear();
+    public void clear(){
+        Observable<RxMediaPlayer> observable = Observable.create(emitter -> {
+
+            if (RxMediaPlayer.this.isPlaying()) {
+                RxMediaPlayer.this.stop();
+            }
+
+            RxMediaPlayer.this.stop();
+            RxMediaPlayer.this.reset();
+            RxMediaPlayer.this.release();
+
+            disposables.clear();
+
+            emitter.onNext(RxMediaPlayer.this);
+            emitter.onComplete();
+        });
+        disposables.add(observable.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(rxMediaPlayer -> {}));
+
+
     }
+
+
+
+
 }

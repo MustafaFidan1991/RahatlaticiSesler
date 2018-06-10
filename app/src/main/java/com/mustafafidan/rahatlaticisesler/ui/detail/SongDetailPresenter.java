@@ -6,9 +6,9 @@ import android.os.Bundle;
 import com.mustafafidan.rahatlaticisesler.base.BasePresenter;
 import com.mustafafidan.rahatlaticisesler.model.Sound;
 import com.mustafafidan.rahatlaticisesler.network.SongDetailApi;
+import com.mustafafidan.rahatlaticisesler.utils.RxMediaPlayer;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -17,6 +17,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class SongDetailPresenter  extends BasePresenter<SongDetailView> {
+
+    private ArrayList<RxMediaPlayer> mediaPlayers = new ArrayList<>();
 
     @Inject
     SongDetailApi songDetailApi;
@@ -79,6 +81,22 @@ public class SongDetailPresenter  extends BasePresenter<SongDetailView> {
                     /// hata alınan kısım
                 });
 
+    }
+
+
+    public void addMediaPlayer(RxMediaPlayer mediaPlayer){
+        mediaPlayers.add(mediaPlayer);
+    }
+
+    public void clearMediaPlayer(RxMediaPlayer mediaPlayer){
+        mediaPlayer.clear();
+    }
+
+
+    public void clearAllMediaPlayer(){
+        for(RxMediaPlayer mediaPlayer:mediaPlayers){
+            mediaPlayer.clear();
+        }
     }
 
 
