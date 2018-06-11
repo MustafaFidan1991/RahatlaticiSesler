@@ -3,10 +3,9 @@ package com.mustafafidan.rahatlaticisesler.ui.detail;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.mustafafidan.rahatlaticisesler.base.BasePresenter;
+import com.mustafafidan.rahatlaticisesler.base.BasePlayerPresenter;
 import com.mustafafidan.rahatlaticisesler.model.Sound;
 import com.mustafafidan.rahatlaticisesler.network.SongDetailApi;
-import com.mustafafidan.rahatlaticisesler.utils.RxMediaPlayerManager;
 
 import java.util.ArrayList;
 
@@ -16,9 +15,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class SongDetailPresenter  extends BasePresenter<SongDetailView> {
+public class SongDetailPresenter  extends BasePlayerPresenter<SongDetailView> {
 
-    private ArrayList<RxMediaPlayerManager> mediaPlayers = new ArrayList<>();
 
     @Inject
     SongDetailApi songDetailApi;
@@ -26,15 +24,14 @@ public class SongDetailPresenter  extends BasePresenter<SongDetailView> {
 
     private Disposable subscription = null;
 
+    public SongDetailPresenter(SongDetailView view) {
+        super(view);
+    }
+
 
     ArrayList<Sound> favoriteItems = new ArrayList<Sound>();
     ArrayList<Sound> unFavoriteItems = new ArrayList<Sound>();
 
-
-
-    public SongDetailPresenter(SongDetailView view) {
-        super(view);
-    }
 
 
     public void addFavoriteItems(Sound sound){
@@ -53,19 +50,12 @@ public class SongDetailPresenter  extends BasePresenter<SongDetailView> {
         unFavoriteItems.remove(sound);
     }
 
-
-
-
-
-
     /**
     * servisten dinamik olarak
     * categoryId'sine göre datalar getiriliyor
     * @param categoryId getirilecek item'ların kategori id'si
     * */
     public void getItems(int categoryId){
-
-
         view.showLoading();
         subscription = songDetailApi
                 .getSongDetail("/rahatlaticisesler/"+String.valueOf(categoryId)+".html")
@@ -80,27 +70,7 @@ public class SongDetailPresenter  extends BasePresenter<SongDetailView> {
                 }, throwable -> {
                     /// hata alınan kısım
                 });
-
     }
-
-
-    public void addMediaPlayer(RxMediaPlayerManager mediaPlayer){
-        mediaPlayers.add(mediaPlayer);
-    }
-
-    public void clearMediaPlayer(RxMediaPlayerManager mediaPlayer){
-        mediaPlayer.clear();
-    }
-
-
-    public void clearAllMediaPlayer(){
-        for(RxMediaPlayerManager mediaPlayer:mediaPlayers){
-            mediaPlayer.clear();
-        }
-    }
-
-
-
 
     /*
     * diğer activity'e gönderilcek intent hazırlanılıyor

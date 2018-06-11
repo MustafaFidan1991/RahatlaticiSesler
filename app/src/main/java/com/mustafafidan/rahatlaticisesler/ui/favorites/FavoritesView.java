@@ -27,4 +27,7 @@ public interface FavoritesView extends BaseView {
      * @param favorites update edilcek list
      */
     void updateFavorites(List<Sound>favorites);
+
+
+    void notifyDataChange();
 }

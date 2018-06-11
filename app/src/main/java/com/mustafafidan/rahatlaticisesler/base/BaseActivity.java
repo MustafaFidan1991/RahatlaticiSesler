@@ -1,5 +1,6 @@
 package com.mustafafidan.rahatlaticisesler.base;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
@@ -39,5 +40,12 @@ abstract public class BaseActivity<P extends BasePresenter,DB extends ViewDataBi
         presenter = instantiatePresenter();
         binding = DataBindingUtil.setContentView(this,getLayoutRes());
     }
+
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
 
 }

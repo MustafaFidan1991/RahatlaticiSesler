@@ -1,6 +1,5 @@
 package com.mustafafidan.rahatlaticisesler.ui.detail;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.MenuItem;
@@ -14,7 +13,6 @@ import com.mustafafidan.rahatlaticisesler.base.BaseRecyclerViewAdapter;
 import com.mustafafidan.rahatlaticisesler.databinding.ActivitySongDetailBinding;
 import com.mustafafidan.rahatlaticisesler.databinding.ActivitySongDetailItemBinding;
 import com.mustafafidan.rahatlaticisesler.model.Sound;
-import com.mustafafidan.rahatlaticisesler.utils.RxMediaPlayerManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +33,7 @@ public class SongDetailActivity extends BaseActivity<SongDetailPresenter,Activit
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         int categoryId = getIntent().getIntExtra("categoryId",1);
@@ -47,53 +46,41 @@ public class SongDetailActivity extends BaseActivity<SongDetailPresenter,Activit
                 R.layout.activity_song_detail_item,
                 BR.sound, presenter,
                 BR.presenter,
-                (itemBinding, data) -> {
-                    // media player her item için oluşturuluyor
-                    RxMediaPlayerManager mediaPlayer = RxMediaPlayerManager.create(new RxMediaPlayerManager.MediaPlayerListener() {
-                        @Override
-                        public void onPrepareSuccess(long audioDuration) {}
-                        @Override
-                        public void onComplete(RxMediaPlayerManager mediaPlayer1) {
-                            if(!mediaPlayer1.isPause()){
-                                mediaPlayer1.resume(0);
-                            }
-                        }
-                    });
+                (itemBinding, data,position) -> {
+                    if(presenter.isPlaying(data.getSoundId())){
+                        ((ActivitySongDetailItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
+                    }
+                    else {
+                        ((ActivitySongDetailItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_circle));
+                    }
 
-                    presenter.addMediaPlayer(mediaPlayer);
-
-                    //play butonuna basılınca çalıştırılıyor
                     ((ActivitySongDetailItemBinding) itemBinding).playButton.setOnClickListener(view -> {
-                        if(mediaPlayer.isFirstPlay()){ //ilk kere çalındığı zaman prepare edliyor
-                            mediaPlayer.play(data.getSoundUrl());
-                            ((ActivitySongDetailItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
-                            mediaPlayer.setFirstPlay(false);
+                        if(presenter.isPlayerNull(data.getSoundId())){
+                            presenter.playMedia(data.getSoundUrl(), data.getSoundId(), () -> {
+                                ((ActivitySongDetailItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
+                            });
                         }
                         else{
-                            if(mediaPlayer.isPrepareSuccess()){
-                                if(mediaPlayer.isPause()){ //durduma
-                                    mediaPlayer.resume(mediaPlayer.getLastPosition());
-                                    ((ActivitySongDetailItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
-                                }
-                                else{ // devam etme
-                                    mediaPlayer.pause(()->{});
-                                    mediaPlayer.setLastPosition(mediaPlayer.getLastPosition());//son kalınan pozisyon kaydediliyor
+                            if(presenter.isPlaying(data.getSoundId())){
+                                presenter.pauseMedia(data.getSoundId(),()->{
                                     ((ActivitySongDetailItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_circle));
-                                }
+                                });
+                            }
+                            else{
+                                presenter.resumeMedia(data.getSoundId(),()->{
+                                    ((ActivitySongDetailItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
+                                });
                             }
                         }
                     });
-
-
 
 
                     ((ActivitySongDetailItemBinding) itemBinding).seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                         @Override
                         public void onProgressChanged(SeekBar seekBar, int i, boolean fromUser) {
                             if(fromUser){
-
                                 // seek barın değişimine göre volume atanıyor
-                                mediaPlayer.setVolume(seekBar.getMax(),i);
+                                presenter.setVolume(data.getSoundId(),(float) i/seekBar.getMax());
                             }
                         }
                         @Override
@@ -142,10 +129,6 @@ public class SongDetailActivity extends BaseActivity<SongDetailPresenter,Activit
         finish();
     }
 
-    @Override
-    public Context getContext() {
-        return null;
-    }
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {

@@ -8,10 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-
-import com.mustafafidan.rahatlaticisesler.model.Sound;
-import com.mustafafidan.rahatlaticisesler.ui.favorites.FavoritesPresenter;
-
 import java.util.List;
 
 /**
@@ -48,7 +44,7 @@ public class BaseRecyclerViewAdapter<T extends BaseModel> extends RecyclerView.A
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
-        holder.bindto(entityList.get(position),dataId,presenterId,presenter,onItemValidateListener);
+        holder.bindto(entityList.get(position),position,dataId,presenterId,presenter,onItemValidateListener);
     }
 
     @Override
@@ -75,9 +71,9 @@ public class BaseRecyclerViewAdapter<T extends BaseModel> extends RecyclerView.A
             this.binding = binding;
         }
 
-        void bindto(T data,int dataId,int presenterId,BasePresenter presenter,OnItemValidateListener<T> onItemValidateListener) {
+        void bindto(T data,int position,int dataId,int presenterId,BasePresenter presenter,OnItemValidateListener<T> onItemValidateListener) {
 
-            if(onItemValidateListener!=null) onItemValidateListener.onItemValidate(binding,data);
+            if(onItemValidateListener!=null) onItemValidateListener.onItemValidate(binding,data,position);
             if(data!=null) binding.setVariable(dataId,data);
             if(presenter!=null) binding.setVariable(presenterId,presenter);
             binding.executePendingBindings();
@@ -86,7 +82,7 @@ public class BaseRecyclerViewAdapter<T extends BaseModel> extends RecyclerView.A
     }
 
     public interface OnItemValidateListener<T extends BaseModel>{
-        void onItemValidate(ViewDataBinding binding,T data);
+        void onItemValidate(ViewDataBinding binding,T data,int position);
     }
 
 }

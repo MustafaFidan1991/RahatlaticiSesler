@@ -16,7 +16,6 @@ import com.mustafafidan.rahatlaticisesler.base.BaseRecyclerViewAdapter;
 import com.mustafafidan.rahatlaticisesler.databinding.FragmentFavoritesBinding;
 import com.mustafafidan.rahatlaticisesler.databinding.FragmentFavoritesItemBinding;
 import com.mustafafidan.rahatlaticisesler.model.Sound;
-import com.mustafafidan.rahatlaticisesler.utils.RxMediaPlayerManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,51 +52,34 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
 
         binding.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
         binding.setAdapter(new BaseRecyclerViewAdapter<Sound>(new ArrayList<>(),getActivity().getBaseContext(),R.layout.fragment_favorites_item,BR.sound,presenter,BR.presenter,
-                (itemBinding, data) -> {
+                (itemBinding, data,position) -> {
                     if(itemBinding instanceof FragmentFavoritesItemBinding){
 
 
+                        if(presenter.isPlaying(data.getSoundId())){
+                            ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
+                        }
+                        else {
+                            ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_circle));
+                        }
 
-                        ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_circle));
-
-
-                        // media player her item için oluşturuluyor
-                        RxMediaPlayerManager mediaPlayer = RxMediaPlayerManager.create(new RxMediaPlayerManager.MediaPlayerListener() {
-                            @Override
-                            public void onPrepareSuccess(long audioDuration) {}
-                            @Override
-                            public void onComplete(RxMediaPlayerManager mediaPlayer1) {
-                                if(!mediaPlayer1.isPause()){
-                                    mediaPlayer1.resume(0);
-                                }
-                            }
-                        });
-
-
-                        presenter.addMediaPlayer(mediaPlayer);
-
-
-
-                        //play butonuna basılınca çalıştırılıyor
                         ((FragmentFavoritesItemBinding) itemBinding).playButton.setOnClickListener(view -> {
-                            if(mediaPlayer.isFirstPlay()){ //ilk kere çalındığı zaman prepare edliyor
-                                mediaPlayer.play(data.getSoundUrl());
-                                ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
-                                mediaPlayer.setFirstPlay(false);
+                            if(presenter.isPlayerNull(data.getSoundId())){
+                                presenter.playMedia(data.getSoundUrl(), data.getSoundId(), () -> {
+                                    ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
+                                });
                             }
                             else{
-                                if(mediaPlayer.isPrepareSuccess()){
-                                    if(mediaPlayer.isPause()){ //durduma
-                                        mediaPlayer.resume(mediaPlayer.getLastPosition());
-                                        ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
-                                    }
-                                    else{ // devam etme
-                                        mediaPlayer.pause(()->{});
-                                        mediaPlayer.setLastPosition(mediaPlayer.getLastPosition());//son kalınan pozisyon kaydediliyor
+                                if(presenter.isPlaying(data.getSoundId())){
+                                    presenter.pauseMedia(data.getSoundId(),()->{
                                         ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_circle));
-                                    }
+                                    });
                                 }
-
+                                else{
+                                    presenter.resumeMedia(data.getSoundId(),()->{
+                                        ((FragmentFavoritesItemBinding) itemBinding).playButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle));
+                                    });
+                                }
                             }
                         });
 
@@ -106,9 +88,8 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
                             @Override
                             public void onProgressChanged(SeekBar seekBar, int i, boolean fromUser) {
                                 if(fromUser){
-
                                     // seek barın değişimine göre volume atanıyor
-                                    mediaPlayer.setVolume(seekBar.getMax(),i);
+                                    presenter.setVolume(data.getSoundId(),(float) i/seekBar.getMax());
                                 }
                             }
                             @Override
@@ -163,9 +144,14 @@ public class FavoritesFragment extends BaseFragment<FavoritesPresenter,FragmentF
 
     @Override
     public void updateFavorites(List<Sound> favorites) {
-        presenter.clearAllMediaPlayer();
         binding.getAdapter().update(favorites);
         binding.notifyChange();
+    }
+
+    @Override
+    public void notifyDataChange() {
+        presenter.clearAllMediaPlayer();
+        binding.getAdapter().notifyDataSetChanged();
     }
 
     @Override

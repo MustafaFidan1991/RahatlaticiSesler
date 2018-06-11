@@ -1,9 +1,8 @@
 package com.mustafafidan.rahatlaticisesler.ui.favorites;
 
-import com.mustafafidan.rahatlaticisesler.base.BasePresenter;
+import com.mustafafidan.rahatlaticisesler.base.BasePlayerPresenter;
 import com.mustafafidan.rahatlaticisesler.model.Sound;
 import com.mustafafidan.rahatlaticisesler.network.FavoritesApi;
-import com.mustafafidan.rahatlaticisesler.utils.RxMediaPlayerManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,22 +11,16 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class FavoritesPresenter extends BasePresenter<FavoritesView> {
+public class FavoritesPresenter extends BasePlayerPresenter<FavoritesView> {
 
 
-    private ArrayList<RxMediaPlayerManager> mediaPlayers = new ArrayList<>();
+
 
 
     @Inject
     FavoritesApi favoritesApi;
-
-
-    private Disposable subscription = null;
-
-
 
     public FavoritesPresenter(FavoritesView view) {
         super(view);
@@ -70,36 +63,14 @@ public class FavoritesPresenter extends BasePresenter<FavoritesView> {
 
         view.updateFavorites(sounds);
 
+        deletePlayer(item.getSoundId());
+
     }
-
-
-    public void addMediaPlayer(RxMediaPlayerManager mediaPlayer){
-        mediaPlayers.add(mediaPlayer);
-    }
-
-    public void clearMediaPlayer(RxMediaPlayerManager mediaPlayer){
-        mediaPlayer.clear();
-    }
-
-
-    public void clearAllMediaPlayer(){
-        for(RxMediaPlayerManager mediaPlayer:mediaPlayers){
-            mediaPlayer.clear();
-        }
-    }
-
-
-
-
-
-
 
     /**
-     *
      * @param favoriteItems eklenecek favoriler
      * @param unFavoriteItems çıkarılacak favoriler
      * @param latestItems mevcut list
-     *
      * */
     public void updateItems(List<Sound> favoriteItems, List<Sound> unFavoriteItems,List<Sound> latestItems){
 
@@ -139,22 +110,22 @@ public class FavoritesPresenter extends BasePresenter<FavoritesView> {
             }
 
             for(Sound deletedItem : deletedItems){
-
-
                 for (Iterator<Sound> iterator = latestItems.iterator(); iterator.hasNext(); ) {
                     Sound sound = iterator.next();
                     if (sound.getSoundId() == deletedItem.getSoundId()) {
+                        deletePlayer(deletedItem.getSoundId());
                         iterator.remove();
                     }
                 }
 
             }
         }
-
-
-
         view.updateFavorites(latestItems);
 
 
     }
+
+
+
+
 }
