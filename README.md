@@ -16,6 +16,8 @@ Http client tarafında ["Retrofit"](https://github.com/square/retrofit).
 
 Asenkron işlemleri desteklemesi için ["RxJava"](https://github.com/ReactiveX/RxJava).
 
+MediaPlayer Api'si olarak ["ExoPlayer"](https://github.com/google/ExoPlayer).
+
 Json serialize, deserialize işlemleri için Gson.
 
 Kütüphaneleri kullanılmıştır.
